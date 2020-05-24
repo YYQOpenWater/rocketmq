@@ -50,12 +50,23 @@ public class AllocateMessageQueueAveragely implements AllocateMessageQueueStrate
                 cidAll);
             return result;
         }
-
+         //当前客户端id在客户端列表索引
         int index = cidAll.indexOf(currentCID);
+        //看看是不是能平均分配 mod=0 代表能平均分配
         int mod = mqAll.size() % cidAll.size();
+        /**
+         *  mqAll.size() <= cidAll.size() 队列数量 <= 客户端数量，每个客户端最多只能分配一个queue
+         *
+         *  不能平均分配的情况下（ mod > 0）：
+         *
+         *  mod > 0 && index < mod 表示平摊后，还剩余mod个queue，如果当前客户端的索引 index < mod ，那么当前客户端可以在平摊值的基础上多分配一个剩余出来的队列
+         * 当index >= mode 的时候，代表剩余的队列已经给分配完了，那么后面的客户端只需要分配 mqAll.size() / cidAll.size() 个queue就行了
+         */
         int averageSize =
             mqAll.size() <= cidAll.size() ? 1 : (mod > 0 && index < mod ? mqAll.size() / cidAll.size()
                 + 1 : mqAll.size() / cidAll.size());
+        //这里后半部分 index * averageSize + mod 就是剩余队列(mod个)分配完了
+        // index值 >=mod 后面的客户端的startIndex要在index * averageSize的基础上 + mod
         int startIndex = (mod > 0 && index < mod) ? index * averageSize : index * averageSize + mod;
         int range = Math.min(averageSize, mqAll.size() - startIndex);
         for (int i = 0; i < range; i++) {

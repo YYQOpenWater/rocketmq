@@ -26,8 +26,8 @@ import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 
 public class ConsumerData {
     private String groupName;
-    private ConsumeType consumeType;
-    private MessageModel messageModel;
+    private ConsumeType consumeType; // pull  or push
+    private MessageModel messageModel;  //cluster or broadcast
     private ConsumeFromWhere consumeFromWhere;
     private Set<SubscriptionData> subscriptionDataSet = new HashSet<SubscriptionData>();
     private boolean unitMode;

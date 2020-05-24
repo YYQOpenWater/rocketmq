@@ -25,6 +25,7 @@ import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.apache.rocketmq.common.protocol.heartbeat.SubscriptionData;
 
 /**
+ * 代表着一个消费者信息
  * Consumer inner interface
  */
 public interface MQConsumerInner {
@@ -34,9 +35,9 @@ public interface MQConsumerInner {
 
     ConsumeType consumeType();
 
-    ConsumeFromWhere consumeFromWhere();
+    ConsumeFromWhere consumeFromWhere(); //从哪开始消费
 
-    Set<SubscriptionData> subscriptions();
+    Set<SubscriptionData> subscriptions(); //订阅的topic数据
 
     void doRebalance();
 

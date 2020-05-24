@@ -368,8 +368,10 @@ public abstract class RebalanceImpl {
             }
         }
 
+        // 循环执行，将mqSet订阅数据封装成PullRequest对象，并添加到pullRequestList中
         List<PullRequest> pullRequestList = new ArrayList<PullRequest>();
         for (MessageQueue mq : mqSet) {
+            // 如果缓存列表不存在该队列，说明这次消息队列重新分配后新增加的消息队列
             if (!this.processQueueTable.containsKey(mq)) {
                 if (isOrder && !this.lock(mq)) {
                     log.warn("doRebalance, {}, add a new mq failed, {}, because lock failed", consumerGroup, mq);
@@ -399,6 +401,7 @@ public abstract class RebalanceImpl {
             }
         }
 
+        // 将pullRequestList添加到PullMessageService中的pullRequestQueue阻塞队列中，以唤醒PullMessageService线程执行消息拉取
         this.dispatchPullRequest(pullRequestList);
 
         return changed;
